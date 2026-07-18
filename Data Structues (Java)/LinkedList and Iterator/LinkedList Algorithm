@@ -1,0 +1,57 @@
+/*
+ * Name: Edward Vu
+ *
+ * Contains the MyAlgorithm class which holds the algorithm to be tested
+ */
+
+/**
+ * A concrete class that implements a static method utilizing MyLinkedList
+ */
+
+public class MyAlgorithm {
+    private static final String NULL = "Invalid list";
+
+    /**
+     * Algorithm that merges two lists together in ascending order
+     * @param <E> the output list
+     * @param left the first list to be merged
+     * @param right the second list to be merged
+     * @return a list holding both lists merged together
+     */
+    public static <E extends Comparable<E>> MyLinkedList<E> mergeLists(
+        MyLinkedList<E> left, MyLinkedList<E> right){
+        // Note: You might find compareTo() useful
+        if(left == null || right == null){
+            throw new NullPointerException(NULL);
+        }
+        MyLinkedList<E> newList = new MyLinkedList<>();
+        int countLeft = 0;
+        int countRight = 0;
+        int size = left.size() + right.size();
+        for(int i = 0; i < size; ++i){
+            if(left.get(countLeft).compareTo(right.get(countRight)) <= 0){
+                newList.add(left.get(countLeft));
+                countLeft++;
+                if(countLeft == left.size()){
+                    while(countRight < right.size()){
+                        newList.add(right.get(countRight));
+                        countRight++;
+                    }
+                    break;
+                }
+            }
+            else{
+                newList.add(right.get(countRight));
+                countRight++;
+                if(countRight == right.size()){
+                    while(countLeft< left.size()){
+                        newList.add(left.get(countLeft));
+                        countLeft++;
+                    }
+                    break;
+                }
+            }
+        }
+        return newList;
+    }
+}
