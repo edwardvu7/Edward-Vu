@@ -1,0 +1,63 @@
+/*
+ * Name: Edward Vu
+ *
+ * Contains the MyAlgorithm class which holds the algorithm to be tested
+ */
+
+/**
+ * A concrete class that implements a static method utilizing MyLinkedList
+ */
+public class MyAlgorithm {
+    private static final String INVALID = "Invalid";
+    /**
+     * algorithm to merge two lists in ascending order
+     * @param <E> generic type to allow Integers, Strings, etc.
+     * @param left first list to be merged
+     * @param right second list to be merged
+     * @return a list holding both lists merged
+     */
+    public static <E extends Comparable<E>> MyLinkedList<E> mergeLists(
+        MyLinkedList<E> left, MyLinkedList<E> right){
+        // Note: Use listIterator() from MyLinkedList to create an iterator
+        if(left == null || right == null){
+            throw new NullPointerException(INVALID);
+        }
+        MyLinkedList.MyListIterator iteratorLeft = left.new MyListIterator();
+        MyLinkedList.MyListIterator iteratorRight = right.new MyListIterator();
+        MyLinkedList<E> linked = new MyLinkedList<>();
+        MyLinkedList.MyListIterator list = linked.new MyListIterator();
+        E rig = (E) iteratorRight.next();
+        E lef = (E) iteratorLeft.next();
+        while(lef != null && rig != null){
+            if(lef.compareTo(rig) <= 0){
+                list.add(lef);
+                if(iteratorLeft.hasNext() == true){
+                    lef = (E) iteratorLeft.next();
+                }
+                else{
+                    list.add(rig);
+                    while(iteratorRight.hasNext() == true){
+                        rig = (E) iteratorRight.next();
+                        list.add(rig);
+                    }
+                    break;
+                }
+            }
+            else{
+                list.add(rig);
+                if(iteratorRight.hasNext() == true){
+                    rig = (E) iteratorRight.next();
+                }
+                else{
+                    list.add(lef);
+                    while(iteratorLeft.hasNext() == true){
+                        lef = (E) iteratorLeft.next();
+                        list.add(lef);
+                    }
+                    break;
+                }
+            }
+        }
+        return linked;
+    }
+}
