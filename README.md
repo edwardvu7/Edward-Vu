@@ -1,6 +1,5 @@
 # Hello 👋
-I am Edward Vu a rising second year Computer Science student at UC San Diego specializing in Bioinformatics.
-This page contains examples of my work and past code I have written.
+I am Edward Vu a rising second year and this page contains examples of my work and past code I have written as a rising second year CS student at UC San Diego specializing in Bioinformatics.
 
 Education: BS Computer Science, UCSD (Expected to graduate June 2028)
 
