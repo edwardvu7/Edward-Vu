@@ -1,0 +1,117 @@
+/*
+ * Name: Edward Vu
+ *
+ * Contains the MyHashSet class which acts as a hashtable
+ */
+
+/**
+ * class that contains the methods of a hashset
+ */
+public class MyHashSet<E> {
+    public static final Object DEFAULT_OBJECT = new Object();
+    private static final String EXCEPTION = "INVALID";
+    private static final int DEFAULT_CAPACITY = 5;
+
+    MyHashMap<E, Object> hashMap;
+
+    /**
+     * default constructor for a hashset
+     */
+    public MyHashSet() {
+        /* Add your implementation here */
+        hashMap = new MyHashMap<>(DEFAULT_CAPACITY);
+    }
+
+    /**
+     * constructor for a hashset with an initial capacity
+     * @param initialCapacity the initial capacity of the hashtable
+     */
+    public MyHashSet(int initialCapacity) {
+        /* Add your implementation here */
+        if(initialCapacity <= 0){
+            throw new IllegalArgumentException(EXCEPTION);
+        }
+        hashMap = new MyHashMap<>(initialCapacity);
+    }
+
+    /**
+     * method to add an element to the hashtable
+     * @param element key to be added
+     * @return whether or not it was already in there
+     */
+    public boolean add(E element) {
+        /* Add your implementation here */
+        if(element == null){
+            throw new NullPointerException(EXCEPTION);
+        }
+        if(hashMap.get(element) != null){
+            hashMap.put(element, DEFAULT_OBJECT);
+            return false;
+        }
+        else{
+            hashMap.put(element, DEFAULT_OBJECT);
+            return true;
+        }
+    }
+
+    /**
+     * removes a key from the hashtable
+     * @param element the key to be removed
+     * @return if the key was there and removed
+     */
+    public boolean remove(E element) {
+        /* Add your implementation here */
+        if(element == null){
+            throw new NullPointerException(EXCEPTION);
+        }
+        if(hashMap.get(element) != null){
+            hashMap.remove(element);
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
+     * checks if there is the key in the hashtable
+     * @param element key to be found
+     * @return if there is the key in the table
+     */
+    public boolean contains(E element) {
+        /* Add your implementation here */
+        if(element == null){
+            throw new NullPointerException(EXCEPTION);
+        }
+        if(hashMap.get(element) != null){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * method to get size of the hashtable
+     * @return size of hashtable
+     */
+    public int size() {
+        /* Add your implementation here */
+        return hashMap.size();
+    }
+
+    /**
+     * clears the hashtable
+     */
+    public void clear() {
+        /* Add your implementation here */
+        hashMap.clear();
+    }
+
+    /**
+     * checks if the hashtable is empty
+     * @return if it is empty
+     */
+    public boolean isEmpty() {
+        /* Add your implementation here */
+        return hashMap.isEmpty();
+    }
+}
