@@ -1,0 +1,38 @@
+/*
+ * Name: Edward Vu
+ *
+ * Contains the MyAlgorithm class which contains the atoms sorting algorithm
+ */
+
+import java.util.ArrayList;
+
+/**
+ * MyAlgorithm class which holds the atoms sorting algorithm
+ */
+public class MyAlgorithm {
+    /**
+     * adds or subtracts atoms based on size until there is only one left
+     * @param atoms arraylist of atoms which will be combined later
+     * @return the final result of all atoms
+     */
+    public static Integer lastAtom(ArrayList<Integer> atoms){
+        if(atoms == null){
+            throw new NullPointerException();
+        }
+        MyPriorityQueue<Integer> queue = new MyPriorityQueue<>();
+        for(int i = 0; i < atoms.size(); ++i){
+            queue.push(atoms.get(i));
+        }
+        while(queue.getLength() > 1){
+            Integer first = queue.pop();
+            Integer second = queue.pop();
+            if(first.compareTo(second) == 0){
+                queue.push(first + second);
+            }
+            else{
+                queue.push(second - first);
+            }
+        }
+        return queue.peek();
+    }   
+}
