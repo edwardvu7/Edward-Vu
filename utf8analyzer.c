@@ -340,5 +340,3 @@ int main()
         }
         printf("\n");
 }
-
-
