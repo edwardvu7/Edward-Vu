@@ -1,0 +1,413 @@
+/*
+ * Name: Edward Vu
+ *
+ * Contains the MyBST class which acts as a BST
+ */
+
+import java.util.ArrayList;
+
+/**
+ * class containing methods needed in a BST
+ */
+public class MyBST<K extends Comparable<K>, V> {
+    MyBSTNode<K, V> root = null;
+    int size = 0;
+    private static final String INVALID = "Invalid";
+
+    /**
+     * method to get size of the tree
+     * @return size of tree
+     */
+    public int size() {
+        return size;
+    }
+
+    /**
+     * method to insert into tree
+     * @param key key of node
+     * @param value value of node
+     * @return value of old node if replacement null otherwise
+     */
+    public V insert(K key, V value) {
+        if(key == null){
+            throw new NullPointerException(INVALID);
+        }
+        MyBSTNode<K, V> inserted = new MyBSTNode<K, V>(key, value, null);
+        MyBSTNode<K, V> cur = root;
+        if(cur == null){
+            root = inserted;
+            size++;
+            return null;
+        }
+        while(true){
+            if(key.compareTo(cur.getKey()) == 0){
+                V temp = cur.getValue();
+                cur.setValue(value);
+                return temp;
+            }
+            else if(key.compareTo(cur.getKey()) > 0){
+                if(cur.getRight() == null){
+                    cur.setRight(inserted);
+                    inserted.setParent(cur);
+                    size++;
+                    return null;
+                }
+                cur = cur.getRight();
+            }
+            else{
+                if(cur.getLeft() == null){
+                    cur.setLeft(inserted);
+                    inserted.setParent(cur);
+                    size++;
+                    return null;
+                }
+                cur = cur.getLeft();
+            }
+        }
+    }
+
+    /**
+     * method to search for a key in the tree
+     * @param key key to find
+     * @return value of that key
+     */
+    public V search(K key) {
+        if(root == null){
+            return null;
+        }
+        MyBSTNode<K, V> cur = root;
+        while(true){
+            if(key.compareTo(cur.getKey()) == 0){
+                return cur.getValue();
+            }
+            else if (key.compareTo(cur.getKey()) > 0){
+                if(cur.getRight() == null){
+                    return null;
+                }
+                cur = cur.getRight();
+            }
+            else{
+                if(cur.getLeft() == null){
+                    return null;
+                }
+                cur = cur.getLeft();
+            }
+        }
+    }
+
+    /**
+     * method to remove a node from the BST
+     * @param key key of node to remove
+     * @return value of the node removed
+     */
+    public V remove(K key) {
+        if(root == null){
+            return null;
+        }
+        MyBSTNode<K, V> cur = root;
+        while(cur != null){
+            if(key.compareTo(cur.getKey()) == 0){
+                break;
+            }
+            else if (key.compareTo(cur.getKey()) > 0){
+                if(cur.getRight() == null){
+                    return null;
+                }
+                cur = cur.getRight();
+            }
+            else{
+                if(cur.getLeft() == null){
+                    return null;
+                }
+                cur = cur.getLeft();
+            }
+        }
+        if(cur == root && root.getLeft() == null && root.getRight() == null){
+            V rootval = root.getValue();
+            root = null;
+            return rootval;
+        }
+        size--;
+        if(cur.getRight() == null && cur.getLeft() == null){
+            if(cur.getKey().compareTo(cur.getParent().getKey()) < 0){
+                cur.getParent().setLeft(null);
+            }
+            else{
+                cur.getParent().setRight(null);
+            }
+            return cur.getValue();
+        }
+        else if(cur.getRight() == null || cur.getLeft() == null){
+            if(cur == root){
+                V rootvalue = root.getValue();
+                if(root.getLeft() != null){
+                    root = root.getLeft();
+                }
+                else{
+                    root = root.getRight();
+                }
+                root.setParent(null);
+                return rootvalue;
+            }
+            else if(cur.getKey().compareTo(cur.getParent().getKey()) < 0){
+                if(cur.getLeft() != null){
+                    cur.getParent().setLeft(cur.getLeft());
+                    cur.getLeft().setParent(cur.getParent());
+                }
+                else{
+                    cur.getParent().setLeft(cur.getRight());
+                    cur.getRight().setParent(cur.getParent());
+                }
+            }
+            else{
+                if(cur.getRight() != null){
+                    cur.getParent().setRight(cur.getRight());
+                    cur.getRight().setParent(cur.getParent());
+                }
+                else{
+                    cur.getParent().setRight(cur.getLeft());
+                    cur.getLeft().setParent(cur.getParent());;
+                }
+            }
+            return cur.getValue();
+        }
+        else{
+            V tempval = cur.getValue();
+            MyBSTNode<K, V> temp = cur.successor();
+            cur.setKey(temp.getKey());
+            cur.setValue(temp.getValue());
+            remove(temp.getKey());
+            size++;
+            return tempval;
+        }
+    }
+
+    /**
+     * method to get all nodes within a range
+     * @param low lowest a node can be
+     * @param high highest a node can be
+     * @return an array with all  nodes within the range
+     */
+    public ArrayList<MyBSTNode<K, V>> rangeQuery(K low, K high) {
+        ArrayList<MyBSTNode<K, V>> list = new ArrayList<MyBSTNode<K, V>>();
+        if(root == null){
+            return list;
+        }
+        MyBSTNode<K, V> cur = root;
+        while(cur != null){
+            if(cur.getKey().compareTo(low) >= 0){
+                if(cur.getLeft() != null){
+                    cur = cur.getLeft();
+                }
+                else{
+                    break;
+                }
+            }
+            else{
+                if(cur.getRight() != null){
+                    cur = cur.getRight();
+                }
+                else{
+                    cur = cur.successor();
+                    break;
+                }
+            }
+        }
+        while(cur != null && cur.getKey().compareTo(high) <= 0){
+            list.add(cur);
+            cur = cur.successor();
+        }
+        return list;
+    }
+
+    /**
+     * method to copy the BST into another
+     * @return a copy of the BST
+     */
+    public MyBST<K, V> copy() {
+        MyBST<K, V> copied = new MyBST<>();
+        copyNodes(root, copied);
+        return copied;
+    }
+
+    /**
+     * helper method to help copy
+     * @param node current node being copied
+     * @param copied BST of the copy
+     */
+    private final void copyNodes(MyBSTNode<K, V> node, MyBST<K, V> copied){
+        if(node == null){
+            return;
+        }
+        copied.insert(node.getKey(), node.getValue());
+        copyNodes(node.getLeft(), copied);
+        copyNodes(node.getRight(), copied);
+    }
+
+    /**
+     * MyBSTNode class which implements each node of the BST
+     */
+    static class MyBSTNode<K, V> {
+        private static final String TEMPLATE = "Key: %s, Value: %s";
+        private static final String NULL_STR = "null";
+
+        private K key;
+        private V value;
+        private MyBSTNode<K, V> parent;
+        private MyBSTNode<K, V> left = null;
+        private MyBSTNode<K, V> right = null;
+
+        /**
+         * Creates a MyBSTNode<K,V> storing specified data
+         *
+         * @param key    the key the MyBSTNode<K,V> will
+         * @param value  the data the MyBSTNode<K,V> will store
+         * @param parent the parent of this node
+         */
+        public MyBSTNode(K key, V value, MyBSTNode<K, V> parent) {
+            this.key = key;
+            this.value = value;
+            this.parent = parent;
+        }
+
+        /**
+         * Return the key stored in the the MyBSTNode<K,V>
+         *
+         * @return the key stored in the MyBSTNode<K,V>
+         */
+        public K getKey() {
+            return key;
+        }
+
+        /**
+         * Set the key stored in the MyBSTNode<K,V>
+         *
+         * @param newKey the key to be stored
+         */
+        public void setKey(K newKey) {
+            this.key = newKey;
+        }
+
+        /**
+         * Return data stored in the MyBSTNode<K,V>
+         *
+         * @return the data stored in the MyBSTNode<K,V>
+         */
+        public V getValue() {
+            return value;
+        }
+
+        /**
+         * Set the data stored in the MyBSTNode<K,V>
+         *
+         * @param newValue the data to be stored
+         */
+        public void setValue(V newValue) {
+            this.value = newValue;
+        }
+
+        /**
+         * Return the parent
+         *
+         * @return the parent
+         */
+        public MyBSTNode<K, V> getParent() {
+            return parent;
+        }
+
+        /**
+         * Set the parent
+         *
+         * @param newParent the parent
+         */
+        public void setParent(MyBSTNode<K, V> newParent) {
+            this.parent = newParent;
+        }
+
+        /**
+         * Return the left child
+         *
+         * @return left child
+         */
+        public MyBSTNode<K, V> getLeft() {
+            return left;
+        }
+
+        /**
+         * Set the left child
+         *
+         * @param newLeft the new left child
+         */
+        public void setLeft(MyBSTNode<K, V> newLeft) {
+            this.left = newLeft;
+        }
+
+        /**
+         * Return the right child
+         *
+         * @return right child
+         */
+        public MyBSTNode<K, V> getRight() {
+            return right;
+        }
+
+        /**
+         * Set the right child
+         * @param newRight the new right child
+         */
+        public void setRight(MyBSTNode<K, V> newRight) {
+            this.right = newRight;
+        }
+
+        /**
+         * method to find the successor of the node
+         * @return successor node
+         */
+        public MyBSTNode<K, V> successor() {
+            MyBSTNode<K, V> temp;
+            if(right != null){
+                temp = right;
+                while(temp.left != null){
+                    temp = temp.left;
+                }
+                return temp;
+            }
+            temp = this;
+            while(temp.parent != null && temp == temp.parent.right){
+                temp = temp.parent;
+            }
+            return temp.parent;
+        }
+
+        /**
+         * This method compares if two node objects are equal.
+         *
+         * @param obj The target object that the currect object compares to.
+         * @return Boolean value indicates if two node objects are equal
+         */
+        public boolean equals(Object obj) {
+            if (!(obj instanceof MyBSTNode))
+                return false;
+
+            MyBSTNode<K, V> comp = (MyBSTNode<K, V>) obj;
+
+            return ((this.getKey() == null ? comp.getKey() == null :
+                    this.getKey().equals(comp.getKey()))
+                    && (this.getValue() == null ? comp.getValue() == null :
+                    this.getValue().equals(comp.getValue())));
+        }
+
+        /**
+         * This method gives a string representation of node object.
+         *
+         * @return "Key:Value" that represents the node object
+         */
+        public String toString() {
+            return String.format(
+                    TEMPLATE,
+                    this.getKey() == null ? NULL_STR : this.getKey(),
+                    this.getValue() == null ? NULL_STR : this.getValue());
+        }
+    }
+
+}
