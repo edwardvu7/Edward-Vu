@@ -1,0 +1,344 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdint.h>
+
+uint8_t is_ascii(char string[])
+{
+        for(int i = 0; string[i] != 0; ++i){
+                if((string[i] & 0b11111111) >= 128){
+                        return 0;
+                }
+        }
+        return 1;
+}
+
+int32_t capitalize_ascii(char str[])
+{
+        int count = 0;
+        for(int i = 0; str[i] != 0; ++i){
+                if(str[i] >= 'a' && str[i] <= 'z'){
+                        str[i] -= 32;
+                        count++;
+                }
+        }
+        return count;
+}
+
+int byteLength(char str[]){
+        int count = 0;
+        for(int i = 0; str[i] != 0;++i){
+                count++;
+        }
+        return count;
+}
+
+int32_t utf8_strlen(char str[]) {
+    int count = 0;
+    int size = 0;
+    for(int k = 0; str[k] != 0; ++k){
+            size ++;
+    }
+    for(int i = 0; i < size; ++i){
+        if((str[i] & 0b11110000) == 240){
+                i += 3;
+                count++;
+        }
+        if((str[i] & 0b11110000) == 224){
+                i += 2;
+                count++;
+        }
+        if((str[i] & 0b11100000) == 192){
+                i += 1;
+                count++;
+        }
+        if((str[i] < 128) && (str[i] >= 0)){
+                count++;
+        }
+    }
+    return count;
+}
+
+void codepoint_size(char string[]) {
+    int size = 0;
+    int cur = 0;
+    for(int i = 0; string[i] != 0; ++i){
+            size++;
+    }
+    char sizes[size];
+    for(int k = 0; k < size;){
+        if((string[k] & 0b11110000) == 240){
+                sizes[cur] = 4;
+                k += 4;
+                cur++;
+        }
+        else if((string[k] & 0b11100000) == 224){
+                sizes[cur] = 3;
+                k += 3;
+                cur++;
+        }
+        else if((string[k] & 0b11000000) == 192){
+                sizes[cur] = 2;
+                k += 2;
+                cur++;
+        }
+        else{
+                sizes[cur] = 1;
+                k++;
+                cur++;
+        }
+    }
+    sizes[cur] = 0;
+    printf("Bytes per code point: ");
+    for(int j = 0; sizes[j] != 0; j++){
+        printf("%d ", sizes[j]);
+    }
+    printf("\n");
+}
+
+void utf8_substring(const char str[], int start, int end) {
+        int strInd = 0;
+        int cur = 0;
+        int subcur = 0;
+        int size = 0;
+        for(int i = 0; str[i] != 0; ++i){
+                size++;
+        }
+        char sub[size + 1];
+        for(cur; strInd < start;){
+                if((str[cur] < 128) && (str[cur] >= 0)){
+                        ++cur;
+                        strInd++;
+                }
+                else if((str[cur] & 0b11111000) == 240){
+                        cur += 4;
+                        strInd++;
+                }
+                else if((str[cur] & 0b11110000) == 224){
+                        cur+=3;
+                        strInd++;
+                }
+                else if((str[cur] & 0b11100000) == 192){
+                        cur+=2;
+                        strInd++;
+                }
+        }
+        for(cur; strInd < end;){
+                if((str[cur] < 128) && (str[cur] >= 0)){
+                        sub[subcur] = str[cur];
+                        ++cur;
+                        ++subcur;
+                        strInd++;
+                }
+                else if((str[cur] & 0b11111000) == 240){
+                        for(int k = 0; k < 4; k++){
+                                sub[subcur] = str[cur];
+                                subcur++;
+                                cur++;
+                        }
+                        strInd++;
+                }
+                else if((str[cur] & 0b11110000) == 224){
+                        for(int k = 0; k < 3; k++){
+                                sub[subcur] = str[cur];
+                                subcur++;
+                                cur++;
+                        }
+                        strInd++;
+                }
+                else if((str[cur] & 0b11100000) == 192){
+                        for(int k = 0; k <  2; k++){
+                                sub[subcur] = str[cur];
+                                subcur++;
+                                cur++;
+                        }
+                        strInd++;
+                }
+        }
+        sub[subcur] = 0;
+        printf("Substring of the first 6 code points: %s\n", sub);
+}
+
+void codedecimals(char string[]){
+        int size = 0;
+        int cur = 0;
+        for(int i = 0; string[i] != 0; ++i){
+                size++;
+        }
+        unsigned int binary = 0;
+        int decimals[size];
+        for(int k = 0; k < size; ++k){
+                if((string[k] & 0b11110000) == 240){
+                        binary = (((string[k] & 0b111) << 18) | ((string[k + 1] & 0b111111) << 12) | ((string[k + 2] & 0b111111) << 6) | (string[k + 3] & 0b111111));
+                        k += 3;
+                        cur ++;
+                }
+                else if((string[k] & 0b11100000) == 224){
+                        binary = (((string[k] & 0b1111) << 12) | ((string[k + 1] & 0b111111) << 6) | (string[k + 2] & 0b111111));
+                        k += 2;
+                        cur ++;
+                }
+                else if((string[k] & 0b11000000) == 192){
+                        binary = (((string[k] & 0b11111) << 6) | (string[k + 1] & 0b111111));
+                        k++;
+                        cur ++;
+                }
+                else{
+                        binary = string[k];
+                        cur++;
+                }
+                decimals[cur - 1] = binary;
+        }
+        for(int i = 0; i < cur; ++i){
+                printf("%d ", decimals[i]);
+        }
+        printf("\n");
+}
+
+int is_animal_emoji_at(const char str[], int index){
+        int codepoint = 0;
+        int cur = 0;
+        for(int i = 0; codepoint < index; i++){
+                if((str[cur] & 0b11110000) == 240){
+                        cur += 4;
+                        codepoint++;
+                        i += 3;
+                }
+                else if((str[cur] & 0b11100000) == 224){
+                        cur += 3;
+                        codepoint++;
+                        i+= 2;
+                }
+                else if((str[cur] & 0b11000000) == 192){
+                        cur += 2;
+                        codepoint++;
+                        i++;
+                }
+                else{
+                        cur++;
+                        codepoint++;
+                }
+        }
+        int binary = 0;
+        if((str[cur] >= 0) && (str[cur] < 128)){
+                binary = str[cur];
+        }
+        else if((str[cur] & 0b11110000) == 240){
+                binary = (((str[cur] & 0b111) << 18) | ((str[cur + 1] & 0b111111) << 12) | ((str[cur + 2] & 0b111111) << 6) | (str[cur + 3] & 0b111111));
+        }
+        else if((str[cur] & 0b11100000) == 224){
+                binary = (((str[cur] & 0b1111) << 12) | ((str[cur + 1] & 0b111111) << 6) | (str[cur + 2] & 0b111111));
+        }
+        else if((str[cur] & 0b11000000) == 192){
+                binary = (((str[cur] & 0b11111) << 6) | (str[cur + 1] & 0b111111));
+        }
+        if((binary >= 0x1F400) && (binary <= 0x1F43F)){
+                return 1;
+        }
+        if((binary >= 0x1F980) && (binary <= 0x1F9AE)){
+                return 1;
+        }
+        return 0;
+}
+void subStringAnimal(const char str[], int start, int end){
+        int strInd = 0;
+        int cur = 0;
+        int subcur = 0;
+        int size = 0;
+        for(int i = 0; str[i] != 0; ++i){
+                size++;
+        }
+        char sub[size + 1];
+        for(cur; strInd < start;){
+                if((str[cur] < 128) && (str[cur] >= 0)){
+                        ++cur;
+                        strInd++;
+                }
+                else if((str[cur] & 0b11111000) == 240){
+                        cur += 4;
+                        strInd++;
+                }
+                else if((str[cur] & 0b11110000) == 224){
+                        cur+=3;
+                        strInd++;
+                }
+                else if((str[cur] & 0b11100000) == 192){
+                        cur+=2;
+                        strInd++;
+                }
+        }
+        for(cur; strInd < end;){
+                if((str[cur] < 128) && (str[cur] >= 0)){
+                        sub[subcur] = str[cur];
+                        ++cur;
+                        ++subcur;
+                        strInd++;
+                }
+                else if((str[cur] & 0b11111000) == 240){
+                        for(int k = 0; k < 4; k++){
+                                sub[subcur] = str[cur];
+                                subcur++;
+                                cur++;
+                        }
+                        strInd++;
+                }
+                else if((str[cur] & 0b11110000) == 224){
+                        for(int k = 0; k < 3; k++){
+                                sub[subcur] = str[cur];
+                                subcur++;
+                                cur++;
+                        }
+                        strInd++;
+                }
+                else if((str[cur] & 0b11100000) == 192){
+                        for(int k = 0; k <  2; k++){
+                                sub[subcur] = str[cur];
+                                subcur++;
+                                cur++;
+                        }
+                        strInd++;
+                }
+        }
+        sub[subcur] = 0;
+        printf("%s", sub);
+}
+
+int main()
+{
+        printf("Enter a UTF-8 encoded string: ");
+        char string[100];
+        char *input = fgets(string, 99, stdin);
+        if(is_ascii(string) == 1){
+                printf("Valid ASCII: true\n");
+        }
+        else{
+                printf("Valid ASCII: false\n");
+        }
+        char capital[100];
+        for(int i = 0; string[i] != 0; ++i){
+                capital[i] = string[i];
+        }
+        int32_t capitalize = capitalize_ascii(capital);
+        printf("Uppercased ASCII: %s \n", capital);
+        printf("Length in bytes: %d\n", byteLength(string));
+        printf("Number of code points: %d\n", utf8_strlen(string));
+        codepoint_size(string);
+        utf8_substring(string, 0, 6);
+        printf("Code points as decimal numbers: ");
+        codedecimals(string);
+        int animals[100];
+        int cur = 0;
+        for(int i = 0; string[i] != 0; ++i){
+                int has = is_animal_emoji_at(string, i);
+                if(has == 1){
+                        animals[cur] = i;
+                        cur++;
+                }
+        }
+        printf("Animal emojis: ");
+        for(int p = 0; p < cur; ++p){
+                subStringAnimal(string, animals[p], animals[p] + 1);
+        }
+        printf("\n");
+}
+
+
