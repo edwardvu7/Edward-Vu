@@ -1,0 +1,43 @@
+/*
+ * Name: Edward Vu
+ *
+ * Algorithm to check whether the array holds duplicate Ids a certain amount 
+ * apart
+ */
+
+/**
+ * class which holds the algorithm to check the list
+ */
+public class MyAlgorithm {
+    private static final String EXCEPTION = "INVALID";
+
+    /**
+     * method which runs through the array and checks the numbers and checks
+     * if there is any duplicates a certain amount apart
+     * @param transactionIds list to be parsed and checked
+     * @param certainty how far apart duplicates have to be
+     * @return whether or not any duplicates were too close together
+     */
+    public static boolean hasFraudulentTRs(int[] transactionIds,
+        int certainty) {
+        /* Add your implementation here */
+        // Note: You may find Math.abs() useful
+
+        if(certainty <= 0){
+            throw new IllegalArgumentException(EXCEPTION);
+        }
+        MyHashMap<Integer, Integer> hashMap = new MyHashMap<>();
+        for(int i = 0; i < transactionIds.length; ++i){
+            if(hashMap.get(transactionIds[i]) == null){
+                hashMap.put(transactionIds[i], i);
+            }
+            else{
+                if(Math.abs(hashMap.get(transactionIds[i]) - i)  <= certainty){
+                    return true;
+                }
+                hashMap.put(transactionIds[i], i);
+            }
+        }
+        return false;
+    }
+}
