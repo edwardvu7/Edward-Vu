@@ -1,0 +1,200 @@
+/*
+ * Name: Edward Vu
+ *
+ * Contains the MyMinHeap class which acts as a MinHeap
+ */
+
+import java.util.ArrayList;
+import java.util.Collection;
+
+/**
+ * the minheap class which contains all the methods needed
+ */
+public class MyMinHeap<E extends Comparable<E>> implements MinHeapInterface<E>{
+    protected ArrayList<E> data;
+    private static final String INVALID = "invalid";
+    private static final int TWO = 2;
+    
+    /**
+     * MyMinHeap constructor which initializes with no arguments
+     */
+    public MyMinHeap(){
+        data = new ArrayList<>();
+    }
+
+    /**
+     * MyMinHeap constructor which initializes with an argument
+     * @param collection the initial heap passed into the minheap
+     */
+    public MyMinHeap(Collection<? extends E> collection){
+        if(collection == null || collection.contains(null)){
+            throw new NullPointerException(INVALID);
+        }
+        data = new ArrayList<>(collection);
+        for(int i = data.size() - 1; i >= 0; --i){
+            percolateDown(i);
+        }
+    }
+
+    /**
+     * swaps the data of the two indexes
+     * @param from the first index to be swapped
+     * @param to what the first index is swapped with
+     */
+    protected void swap(int from, int to){
+        E tempfrom = data.get(from);
+        E tempto = data.get(to);
+        data.set(from, tempto);
+        data.set(to, tempfrom);
+    }
+
+    /**
+     * gets the index of the parent of index
+     * @param index the one we want the parent of
+     * @return the index of the parent
+     */
+    protected static int getParentIdx(int index){
+        return (index - 1) / TWO;
+    }
+
+    /**
+     * gets the left child of the one at index
+     * @param index the one we want the left child of
+     * @return index of the left child
+     */
+    protected static int getLeftChildIdx(int index){
+        return (index * TWO) + 1;
+    }
+
+    /**
+     * gets the right child of the one at index
+     * @param index the one we want the right child of
+     * @return index of the right child
+     */
+    protected static int getRightChildIdx(int index){
+        return (index * TWO) + TWO;
+    }
+
+    /**
+     * gets the smaller of the two children
+     * @param index the one we want the child of
+     * @return index of the smaller child
+     */
+    protected int getMinChildIdx(int index){
+        int leftind = getLeftChildIdx(index);
+        int rightind = getRightChildIdx(index);
+        if(leftind >= data.size()){
+            return -1;
+        }
+        else if(rightind >= data.size() && leftind < data.size()){
+            return leftind;
+        }
+        else if(data.get(leftind).compareTo(data.get(rightind)) <= 0){
+            return leftind;
+        }
+        else{
+            return rightind;
+        }
+    }
+
+    /**
+     * sends up the data at index until it is bigger than its parent
+     * @param index index of the data to be sent up
+     */
+    protected void percolateUp(int index){
+        int cur = index;
+        while(cur > 0 && data.get(cur).compareTo(data.get(getParentIdx(cur)))
+             < 0){
+            swap(cur, getParentIdx(cur));
+            cur = getParentIdx(cur);
+        }
+    }
+
+    /**
+     * sends the data at index until it is bigger than its children
+     * @param index index of the data to be sent down
+     */
+    protected void percolateDown(int index){
+        int cur = index;
+        int child = getMinChildIdx(index);        
+        while(child != -1 && data.get(cur).compareTo(data.get(child)) > 0){
+            swap(cur, child);
+            cur = child;
+            child = getMinChildIdx(cur);
+        }
+    }
+
+    /**
+     * deletes the data at the index and rearranges the heap after
+     * @param index data to be deleted
+     * @return data at the index removed
+     */
+    protected E deleteIndex(int index){
+        E temp = data.get(index);
+        if(index == data.size() - 1){
+            data.remove(index);
+            return temp;
+        }
+        else{
+            swap(index, data.size() - 1);
+            data.remove(data.size() - 1);
+            if(index > 0 && 
+                data.get(index).compareTo(data.get(getParentIdx(index))) < 0){
+                percolateUp(index);
+            }
+            else{
+                percolateDown(index);
+            }
+            return temp;
+        }
+    }
+
+    /**
+     * inserts an element into the array and sends it up
+     * @param element the data to be added
+     */
+    public void insert(E element){
+        if(element == null){
+            throw new NullPointerException(INVALID);
+        }
+        data.add(element);
+        percolateUp(data.size() - 1);
+    }
+
+    /**
+     * gets the root of the minheap
+     * @return the root
+     */
+    public E getMin(){
+        if(data.size() == 0){
+            return null;
+        }
+        return data.get(0);
+    }
+
+    /**
+     * removes the root of the minheap
+     * @return the root of the minheap
+     */
+    public E remove(){
+        if(data.size() == 0){
+            return null;
+        }
+        return deleteIndex(0);
+    }
+
+    /**
+     * gets the size of the heap
+     * @return size of heap
+     */
+    public int size(){
+        return data.size();
+    }
+
+    /**
+     * clears the heap
+     */
+    public void clear(){
+        data.clear();
+    }
+}
