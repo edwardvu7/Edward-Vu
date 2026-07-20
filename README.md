@@ -1,8 +1,16 @@
-# Hello 👋
-I am Edward Vu a rising second year and this page contains examples of my work and past code I have written as a rising second year CS student at UC San Diego specializing in Bioinformatics.
+# Hello 👋 
+I am Edward Vu, a Computer Science student at UC San Diego specializing in Bioinformatics. This page provides an overview of my technical skills, coursework, and architecture portfolio.
 
-Education: BS Computer Science, UCSD (Expected to graduate June 2028 and looking to apply for B.S/M.S program after to graduate June 2029)
+## 🎓 Education
+* **B.S. Computer Science (Bioinformatics)** | UC San Diego (Expected: June 2028)
+* *Note: Planning to transition into the consecutive B.S./M.S. program to graduate in June 2029.*
 
-Coding Languages: Java, Python, C, JavaScript, Assembly
+## 💻 Technical Skills
+* **Core Languages:** Java, C
+* **Prior Exposure:** Python, JavaScript, Assembly
+* **Developer Tools:** Git, GitHub, Linux/Unix, GDB, Valgrind
 
-Developer Tools: Git, GitHub, Linux, GDB, Valgrind
+## 🔒 Project Portfolio & Code Samples
+In strict compliance with UC San Diego's Academic Integrity Policy, all repositories containing course-assigned programming code (my Airline Reservation System and Java Data Structures projects) are maintained in a separate, secure private repository. 
+
+Full code samples, specific implementation details, and documentation are gladly made available to recruiters, hiring managers, and labs upon private request.
