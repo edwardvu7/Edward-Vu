@@ -11,6 +11,6 @@ I am Edward Vu, a Computer Science student at UC San Diego specializing in Bioin
 * **Developer Tools:** Git, GitHub, Linux/Unix, GDB, Valgrind
 
 ## 🔒 Project Portfolio & Code Samples
-In strict compliance with UC San Diego's Academic Integrity Policy, all repositories containing course-assigned programming code (specifically my Airline Reservation System and Java Data Structures projects) are maintained in a separate, secure private repository. 
+In strict compliance with UC San Diego's Academic Integrity Policy, all code not available for public use (specifically my Airline Reservation System and Java Data Structures projects) are maintained in a separate, secure private repository. 
 
 Full code samples, specific implementation details, and documentation are gladly made available to recruiters, hiring managers, and labs upon request.
