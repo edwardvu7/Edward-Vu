@@ -3,7 +3,7 @@ I am Edward Vu, a Computer Science student at UC San Diego specializing in Bioin
 
 ## 🎓 Education
 * **B.S. Computer Science (Bioinformatics)** | UC San Diego (Expected: June 2028)
-* *Note: Planning to transition into the consecutive B.S./M.S. program to graduate in June 2029.*
+* *Note: Planning to apply for the consecutive B.S./M.S. program to graduate in June 2029.*
 
 ## 💻 Technical Skills
 * **Core Languages:** Java, C
